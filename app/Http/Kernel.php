@@ -43,14 +43,11 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-<<<<<<< HEAD
 
         'no_throttle' => [
             'throttle:none',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]
-=======
->>>>>>> a36d0bc15f997fcb4de9781c3ad27683772fa045
     ];
 
     /**
@@ -70,11 +67,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-<<<<<<< HEAD
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
         'role.authorization' => \App\Http\Middleware\RoleAuthorization::class,
 
-=======
->>>>>>> a36d0bc15f997fcb4de9781c3ad27683772fa045
     ];
 }
