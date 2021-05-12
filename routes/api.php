@@ -2,10 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
+use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\TestController;
-=======
->>>>>>> a36d0bc15f997fcb4de9781c3ad27683772fa045
 
 /*
 |--------------------------------------------------------------------------
@@ -18,11 +16,11 @@ use App\Http\Controllers\API\V1\TestController;
 |
 */
 
-<<<<<<< HEAD
 
 // Public  Access
-Route::group(['prefix' => 'v1', 'middleware' => ['no_throttle']], function() {
-
+Route::group(['prefix' => 'v1', 'middleware' => ['api']], function() {
+    Route::post('auth/users', [UserController::class, 'login']);
+    Route::post('users/register', [UserController::class, 'create']);
 });
 
 Route::get('test/info', [TestController::class, 'getInfo']);
@@ -34,8 +32,6 @@ Route::middleware(['jwt.verify:api'])->group(function() {
     });
 });
 
-=======
->>>>>>> a36d0bc15f997fcb4de9781c3ad27683772fa045
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
