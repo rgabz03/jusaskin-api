@@ -5,6 +5,7 @@ namespace App\Http\Services\V1;
 use JWTAuth;
 use App\Http\Services\Service;
 use App\Models\User;
+use App\Models\Profile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,6 +28,14 @@ class UserService extends Service
         $create = User::create($request->all());
 
         if($create){
+
+            $profile_data_payloads = [
+                'user_id'       => $create->id,
+                'created_date'  => Carbon::now()->format('Y-m-d h:i:s'),
+            ];
+
+            $create_default_profile = Profile::create($profile_data_payloads);
+
             return $create;
         }
 

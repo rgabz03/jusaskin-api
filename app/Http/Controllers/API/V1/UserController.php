@@ -55,15 +55,15 @@ class UserController extends Controller
         $credentials = $request->only(['username', 'password']);
 
         $error = 200;
-
         if (! $token = auth()->attempt($credentials)) {
             $error = 401;
             $this->message = 'There was an issue logging in this user. Please try again.';
             $this->error = true;
         }else{
+            $user_data = User::where(['username' => $request->username])->first();
             $data = $this->respondWithToken($token);
             $this->message = 'Successfully login user!';
-            $this->data  = $data->original;
+            $this->data  = ['access' => $data->original, 'user_data' => $user_data];
         }
 
         return response()->json($this->getResponse(), $error);
