@@ -4,6 +4,7 @@ namespace App\Http\Services\V1;
 
 use JWTAuth;
 use App\Http\Services\Service;
+use App\Http\Services\V1\SkillService;
 use App\Models\User;
 use App\Models\Profile;
 use Carbon\Carbon;
@@ -53,5 +54,24 @@ class UserService extends Service
         }
 
         return $token;
+    }
+
+
+    public function profile($id)
+    {
+        # code...
+        $skillService = new SkillService();
+
+        $users = User::where(['id' => $id])
+                    ->join('profiles','profiles.user_id','users.id')
+                    ->first();
+
+        $skills = $skillService->getUserSkills($id);
+
+        if($users){
+            return ['profile' => $users, 'skills' => $skills]
+        }
+
+        return false;
     }
 }

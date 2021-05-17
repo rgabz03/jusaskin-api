@@ -123,4 +123,23 @@ class UserController extends Controller
         return Auth::guard('api');
     }
 
+
+    public function profile($id)
+    {
+        # code...
+        $userService = new UserService();
+        $data   =   $userService->profile($id);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully viewed user profile!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue getting users profile. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
 }

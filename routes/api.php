@@ -28,7 +28,12 @@ Route::get('test/info', [TestController::class, 'getInfo']);
 // Authentication Access
 Route::middleware(['jwt.verify:api'])->group(function() {
     Route::prefix('v1')->group(function() {
-        Route::get('test/info', [TestController::class, 'getInfo']);
+
+        // For getting user profile
+        Route::prefix('users')->group(function() {
+            Route::get('profile', [UserController::class, 'profile']);
+        });
+
     });
 });
 
