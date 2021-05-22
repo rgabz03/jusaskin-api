@@ -142,4 +142,43 @@ class UserController extends Controller
 
         return response()->json($this->getResponse(), $error);
     }
+
+    public function getCoinsBalance($id, Request $request)
+    {
+        # code...
+         $userService = new UserService();
+         $data   =   $userService->getCoinsBalance($id, $request);
+
+         $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+         if ($data) {
+             $this->message = 'Successfully viewed user coins!';
+             $this->data  = $data;
+         } else {
+             $this->message = 'There was an issue getting users coins. Please try again.';
+             $this->error = true;
+         }
+
+         return response()->json($this->getResponse(), $error);
+    }
+
+    public function getUserProfile($id, Request $request)
+    {
+        # code...
+         # code...
+         $userService = new UserService();
+         $data   =   $userService->getUserProfile($id, $request);
+
+         $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+         if ($data) {
+             $this->message = 'Successfully viewed user profile!';
+             $this->data  = $data;
+         } else {
+             $this->message = 'There was an issue viewing users profile. Please try again.';
+             $this->error = true;
+         }
+
+         return response()->json($this->getResponse(), $error);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Services\V1;
 use JWTAuth;
 use App\Http\Services\Service;
 use App\Http\Services\V1\SkillService;
+use App\Http\Services\V1\ProfileService;
 use App\Models\User;
 use App\Models\Profile;
 use Carbon\Carbon;
@@ -15,6 +16,7 @@ class UserService extends Service
     public function create($request)
     {
         # code...
+
         $request->merge([
             'type'              => 'regular',
             'created_date'      => Carbon::now()->format('Y-m-d h:i:s'),
@@ -60,6 +62,10 @@ class UserService extends Service
     public function profile($id)
     {
         # code...
+        if(auth()->user()->id != $id){
+            return ['error' => 401];
+        }
+
         $skillService = new SkillService();
 
         $users = User::where(['id' => $id])
@@ -69,9 +75,43 @@ class UserService extends Service
         $skills = $skillService->getUserSkills($id);
 
         if($users){
-            return ['profile' => $users, 'skills' => $skills]
+            return ['profile' => $users, 'skills' => $skills];
         }
 
         return false;
     }
+
+
+    public function getCoinsBalance($id, $request)
+    {
+        # code...
+        if(auth()->user()->id != $id){
+            return ['error' => 401];
+        }
+
+        $data = User::where(['id' => $id])->first('coin');
+
+        if($data){
+            return $data;
+        }
+        return false;
+    }
+
+    public function getUserProfile($id, $request)
+    {
+        # code...
+        if(auth()->user()->id != $id){
+            return ['error' => 401];
+        }
+
+        $profileService = new ProfileService();
+
+        $data = $profileService->getUserProfile($id, $request);
+
+        if($data){
+            return $data;
+        }
+        return false;
+    }
+
 }

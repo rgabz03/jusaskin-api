@@ -31,7 +31,10 @@ Route::middleware(['jwt.verify:api'])->group(function() {
 
         // For getting user profile
         Route::prefix('users')->group(function() {
-            Route::get('profile', [UserController::class, 'profile']);
+            Route::get('profile/{id}', [UserController::class, 'getUserProfile']);
+            Route::prefix('coins')->group(function() {
+                Route::get('balance/{id}', [UserController::class, 'getCoinsBalance']);
+            });
         });
 
     });
