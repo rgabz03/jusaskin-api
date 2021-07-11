@@ -165,20 +165,56 @@ class UserController extends Controller
     public function getUserProfile($id, Request $request)
     {
         # code...
-         # code...
-         $userService = new UserService();
-         $data   =   $userService->getUserProfile($id, $request);
+        $userService = new UserService();
+        $data   =   $userService->getUserProfile($id, $request);
 
-         $error  =   (isset($data['error'])) ? $data['error'] : 200;
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
 
-         if ($data) {
-             $this->message = 'Successfully viewed user profile!';
-             $this->data  = $data;
-         } else {
-             $this->message = 'There was an issue viewing users profile. Please try again.';
-             $this->error = true;
-         }
+        if ($data) {
+            $this->message = 'Successfully viewed user profile!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue viewing users profile. Please try again.';
+            $this->error = true;
+        }
 
-         return response()->json($this->getResponse(), $error);
+        return response()->json($this->getResponse(), $error);
+    }
+
+    public function getUserCountFollower($id, Request $request)
+    {
+        # code...
+
+        $userService = new UserService();
+        $data   =   $userService->getUserCountFollower($id);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully get followers count!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue getting followers count. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+    public function getUserInterest($id, Request $request)
+    {
+        # code...
+        $userService = new UserService();
+        $data   =   $userService->getUserInterest($id);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully get users interest!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue getting interest. Please try again.';
+            $this->error = true;
+        }
     }
 }

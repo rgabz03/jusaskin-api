@@ -6,6 +6,7 @@ use JWTAuth;
 use App\Http\Services\Service;
 use App\Http\Services\V1\SkillService;
 use App\Http\Services\V1\ProfileService;
+use App\Http\Services\V1\FollowerService;
 use App\Models\User;
 use App\Models\Profile;
 use Carbon\Carbon;
@@ -22,7 +23,7 @@ class UserService extends Service
             'created_date'      => Carbon::now()->format('Y-m-d h:i:s'),
             'password'          => Hash::make($request->password),
             'ip'                => $_SERVER['REMOTE_ADDR'],
-            'coin'              => 0,
+            'coin'              => 100,
             'notification'      => 0,
             'login_attempt'     => 0,
             'status'            => 'active',
@@ -111,6 +112,37 @@ class UserService extends Service
         if($data){
             return $data;
         }
+        return false;
+    }
+
+
+    public function getUserCountFollower($user_id)
+    {
+        # code...
+        $followerService = new FollowerService();
+
+        $data = $followerService->getUserCountFollower($user_id);
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
+
+
+    public function getUserInterest($user_id)
+    {
+        # code...
+
+        $skillService = new SkillService();
+
+        $data = $skillService->getUserSkills($user_id);
+
+        if($data){
+            return $data;
+        }
+
         return false;
     }
 
