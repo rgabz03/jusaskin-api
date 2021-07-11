@@ -23,7 +23,7 @@ class UserService extends Service
             'created_date'      => Carbon::now()->format('Y-m-d h:i:s'),
             'password'          => Hash::make($request->password),
             'ip'                => $_SERVER['REMOTE_ADDR'],
-            'coin'              => 100,
+            'coins'             => 100,
             'notification'      => 0,
             'login_attempt'     => 0,
             'status'            => 'active',
@@ -90,7 +90,7 @@ class UserService extends Service
             return ['error' => 401];
         }
 
-        $data = User::where(['id' => $id])->first('coin');
+        $data = User::where(['id' => $id])->first('coins');
 
         if($data){
             return $data;
