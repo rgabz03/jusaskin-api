@@ -59,5 +59,16 @@ class ProfileService extends Service
         return false;
     }
 
+    public function updateFirstName($user_id, $request)
+    {
+        # code...
+        $data = tap(Profile::where([ 'user_id' => $user_id]))->update($request);
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
 
 }

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\V1\UserController;
+use App\Http\Controllers\API\V1\PostController;
 use App\Http\Controllers\API\V1\TestController;
 
 /*
@@ -21,6 +22,13 @@ use App\Http\Controllers\API\V1\TestController;
 Route::group(['prefix' => 'v1', 'middleware' => ['api']], function() {
     Route::post('auth/users', [UserController::class, 'login']);
     Route::post('users/register', [UserController::class, 'create']);
+    Route::get('posts', [PostController::class, 'list']);
+    Route::prefix('posts')->group(function() {
+        Route::post('{id}/like', [PostController::class, 'likePost']);
+        Route::get('{id}/like/count', [PostController::class, 'getCountPostLike']);
+        Route::get('{id}/comments', [PostController::class, 'getPostComment']);
+        Route::get('{id}/comments/count', [PostController::class, 'countPostComment']);
+    });
 });
 
 Route::get('test/info', [TestController::class, 'getInfo']);
@@ -37,6 +45,10 @@ Route::middleware(['jwt.verify:api'])->group(function() {
             });
             Route::prefix('{id}')->group(function() {
                 Route::get('interest', [UserController::class, 'getUserInterest']);
+                
+                Route::prefix('posts')->group(function() {
+                    Route::get('saved', [UserController::class, 'getUserPostSave']);
+                });
             });
 
             Route::get('followers/{id}/count', [UserController::class, 'getUserCountFollower']);

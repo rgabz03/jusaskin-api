@@ -28,4 +28,32 @@ class FollowerService extends Service
         return false;
     }
 
+
+    public function getMyFollower($user_id)
+    {
+        # code...
+        $data = Follower::where(['user_id' => $user_id])
+                        ->get();
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
+
+
+    public function getFollowed($user_id)
+    {
+        # code...
+        $data = Follower::where(['follower_id' => $user_id])
+                        ->get();
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
+
 }

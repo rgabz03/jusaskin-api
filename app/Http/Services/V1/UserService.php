@@ -9,6 +9,7 @@ use App\Http\Services\V1\ProfileService;
 use App\Http\Services\V1\FollowerService;
 use App\Models\User;
 use App\Models\Profile;
+use App\Models\PostSave;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,6 +18,12 @@ class UserService extends Service
     public function create($request)
     {
         # code...
+
+        $limit = $this->registrationPerDayLimit(100);
+
+        if($limit > 100){
+            return ['error' => 409];
+        }
 
         $request->merge([
             'type'              => 'regular',
@@ -116,6 +123,20 @@ class UserService extends Service
     }
 
 
+    public function getUserFollower($user_id)
+    {
+        # code...
+        $followerService = new FollowerService();
+
+        $data = $followerService->getUserFollower($user_id);
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
+
     public function getUserCountFollower($user_id)
     {
         # code...
@@ -139,6 +160,38 @@ class UserService extends Service
 
         $data = $skillService->getUserSkills($user_id);
 
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
+
+    public function getUserSavedPost($user_id, $request)
+    {
+        # code...
+        $data = PostSave::where(['user_id' => $user_id])
+                        ->orderBy('created_date', 'desc')
+                        ->get();
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
+
+
+    public function registrationPerDayLimit($limit)
+    {
+        # code...
+
+        // $now = date('Y-m-d')." 00:00:00";
+        $now = "2021-01-01 00:00:00";
+        $data = User::select("id")
+                    ->whereRaw(" created_date between ('$now') and (NOW())")
+                    ->limit($limit)
+                    ->count();
         if($data){
             return $data;
         }

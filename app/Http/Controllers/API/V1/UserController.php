@@ -217,4 +217,22 @@ class UserController extends Controller
             $this->error = true;
         }
     }
+
+
+    public function getUserPostSave($id, Request $request)
+    {
+        # code...
+        $userService = new UserService();
+        $data   =   $userService->getUserSavedPost($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully get users saved post!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue getting saved post. Please try again.';
+            $this->error = true;
+        }
+    }
 }
