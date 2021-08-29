@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\API\V1;
 
-header("Access-Control-Allow-Origin: *");
-
 use JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ElasticEmailHelper;
