@@ -20,12 +20,3 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-
-<IfModule mod_setenvif.c>
-    <IfModule mod_headers.c>
-        <FilesMatch "\.(bmp|cur|gif|ico|jpe?g|png|svgz?|webp|pdf)$">
-
-            Header always  set Access-Control-Allow-Origin "*" env=IS_CORS
-        </FilesMatch>
-    </IfModule>
-</IfModule>
