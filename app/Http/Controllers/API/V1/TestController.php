@@ -77,14 +77,16 @@ class TestController extends Controller
             'email' => $request->email,
           ];
   
-          Mail::send('mails.NotifyMe', $data, function($message) use ($data) {
+          $send = Mail::send('mails.NotifyMe', $data, function($message) use ($data) {
             $message->to('mail@jusaskin.com')
             ->subject($data['subject']);
           });
 
-        
-        return back()->with(['message' => 'Email successfully sent!']);
-  
+          if($send){
+            return back()->with(['message' => 'Email successfully sent!']);
+          }
+          
+          return false;
 
     }
 }

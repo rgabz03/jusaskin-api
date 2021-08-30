@@ -34,6 +34,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api']], function() {
 Route::get('test/info', [TestController::class, 'getInfo']);
 Route::post('test/elastic', [TestController::class, 'testElasticMail']);
 Route::post('test/subscribe', [TestController::class, 'testNotifyMe']);
+Route::post('test/mail', [TestController::class, 'testNotifyMe']);
 // Route::middleware(['cors'])->group(function () {
 //     Route::post('test/subscribe', [TestController::class, 'testNotifyMe']);
 // });
