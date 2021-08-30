@@ -2,10 +2,10 @@
 
 namespace App\Http\Helpers;
 
-define('ELASTIC_API_KEY', '7AACEB212064477A56C88FAE0CBF78122B9D8041E8D828AFE054066C1B185007557A6C795DFF0E3817B6EBAD2C255016');
+define('ELASTIC_API_KEY', '5A6E2956BDAC609941398194DA149B306F12E3B6DE821A929AB5B65D2334651E59DE8A47BC1071F049BD1365E9CBC0D5');
 define('COMPANY_NAME', 'Jusaskin.com');
 define('ELASTIC_HTTP_URL', 'https://api.elasticemail.com/v2/email/send');
-define('SUPPORT_EMAIL', 'support@jusaskin.com');
+define('SUPPORT_EMAIL', 'mail@jusaskin.com');
 
 class  ElasticEmailHelper extends Helper
 {   
