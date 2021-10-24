@@ -21,7 +21,12 @@ use App\Http\Controllers\API\V1\TestController;
 // Public  Access
 Route::group(['prefix' => 'v1', 'middleware' => ['api']], function() {
     Route::post('auth/users', [UserController::class, 'login']);
-    Route::post('users/register', [UserController::class, 'create']);
+    
+    Route::prefix('users')->group(function() {
+        Route::post('register', [UserController::class, 'create']);
+        Route::post('forgot-password', [UserController::class, 'forgotPassword']);
+    });
+    
     Route::get('posts', [PostController::class, 'list']);
     Route::prefix('posts')->group(function() {
         Route::post('{id}/like', [PostController::class, 'likePost']);
@@ -56,6 +61,13 @@ Route::middleware(['jwt.verify:api'])->group(function() {
                 Route::prefix('posts')->group(function() {
                     Route::get('saved', [UserController::class, 'getUserPostSave']);
                 });
+
+                Route::prefix('update')->group(function() {
+                    Route::put('profile', [UserController::class, 'updateProfile']);
+                    Route::put('receive-notification', [UserController::class, 'recieveNotification']);
+                    Route::put('description', [UserController::class, 'updateDescription']);
+                });
+
             });
 
             Route::get('followers/{id}/count', [UserController::class, 'getUserCountFollower']);

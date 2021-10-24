@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService extends Service
 {
+
+    public function find($id)
+    {
+        # code...
+        $data = User::findOrFail($id);
+
+        return $data;
+    }
+
     public function create($request)
     {
         # code...
@@ -66,6 +75,18 @@ class UserService extends Service
         return $token;
     }
 
+
+    public function checkEmailExist($email)
+    {
+        # code...
+        $data = User::where('username', $email)->first();
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+    }
 
     public function profile($id)
     {
@@ -199,4 +220,69 @@ class UserService extends Service
         return false;
     }
 
+    public function updateProfile($id, $request)
+    {
+        # code...
+
+        $user_data = $this->find($id);
+
+        if($user_data){
+
+            // check email if exist
+            $checkEmailExist = $this->checkEmailExist($request->username);
+            
+            if($checkEmailExist && $user_data->username != $request->username){
+                return ['error' => 422];
+            }
+
+            $username_update = User::where('id', $id)->update(['username' => $request->username]);
+
+            $data = Profile::where('user_id', $id)->update($request->only('first_name','last_name','location'));
+
+            if($data){
+                return $data;
+            }
+        }
+
+        return false;
+    }
+
+
+
+    public function recieveNotification($id, $request)
+    {
+        # code...
+
+        $user_data = $this->find($id);
+
+        if($user_data){
+
+            $data = User::where('id', $id)->update(['notification' => $request->notification]);
+
+            if($data){
+                return $data;
+            }
+        }
+
+        return false;
+    }
+
+
+    public function updateDescription($id, $request)
+    {
+        # code...
+
+        $user_data = $this->find($id);
+
+        if($user_data){
+
+            $data = Profile::where('user_id', $id)->update(['description' => $request->description]);
+
+            if($data){
+                return $data;
+            }
+        }
+
+        return false;
+    }
 }

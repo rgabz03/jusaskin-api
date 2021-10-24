@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Login;
 use App\Http\Requests\UserRegistration;
+use App\Http\Requests\Profile;
 use App\Models\User;
 use App\Http\Helpers\JwtToken;
 use Illuminate\Support\Facades\Auth;
@@ -216,6 +217,8 @@ class UserController extends Controller
             $this->message = 'There was an issue getting interest. Please try again.';
             $this->error = true;
         }
+
+        return response()->json($this->getResponse(), $error);
     }
 
 
@@ -234,5 +237,68 @@ class UserController extends Controller
             $this->message = 'There was an issue getting saved post. Please try again.';
             $this->error = true;
         }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+    public function recieveNotification($id, Request $request)
+    {
+        # code...
+        $userService = new UserService();
+        $data   =   $userService->recieveNotification($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully update notification!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue update notification. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+    public function updateProfile($id, Profile $request)
+    {
+        # code...
+        $userService = new UserService();
+
+        $data   =   $userService->updateProfile($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data && !$data['error']) {
+            $this->message = 'Successfully updated Profile!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue updating profile. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+
+
+    public function updateDescription($id, Request $request)
+    {
+        # code...
+        $userService = new UserService();
+
+        $data   =   $userService->updateDescription($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully updated Description!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue updating description. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
     }
 }
