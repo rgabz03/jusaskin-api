@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\V1\UserService;
+use App\Http\Services\V1\SkillService;
 
 class SkillController extends Controller
 {
@@ -32,9 +33,10 @@ class SkillController extends Controller
     public function list()
     {
         # code...
-        $data = Skill::get();
+        $skillService = new SkillService();
+        $data = $skillService->list();
 
-        $error = 200;
+        $error = ( isset($data['error']) ) ?  $data['error'] :200;
 
         if ($data) {
             $this->message = 'Successfully fetch data!';
@@ -47,4 +49,25 @@ class SkillController extends Controller
 
         return response()->json($this->getResponse(), $error);
     }
+
+    public function getUserSkills($user_id)
+    {
+        # code...
+        $skillService = new SkillService();
+        $data = $skillService->getUserSkills($user_id);
+
+        $error = ( isset($data['error']) ) ?  $data['error'] :200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $error = 400;
+            $this->message = 'There was an issue fetching data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
 }

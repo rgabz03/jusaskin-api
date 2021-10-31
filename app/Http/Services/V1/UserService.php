@@ -285,4 +285,23 @@ class UserService extends Service
 
         return false;
     }
+
+
+    public function updateProfession($id, $request)
+    {
+        # code...
+
+        $user_data = $this->find($id);
+
+        if($user_data){
+
+            $data = Profile::where('user_id', $id)->update(['job' => $request->profession]);
+
+            if($data){
+                return $data;
+            }
+        }
+
+        return false;
+    }
 }

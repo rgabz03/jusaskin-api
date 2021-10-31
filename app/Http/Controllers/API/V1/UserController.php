@@ -301,4 +301,26 @@ class UserController extends Controller
 
         return response()->json($this->getResponse(), $error);
     }
+
+
+
+    public function updateProfession($id, Request $request)
+    {
+        # code...
+        $userService = new UserService();
+
+        $data   =   $userService->updateProfession($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully updated Profession!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue updating profession. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
 }

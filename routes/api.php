@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\PostController;
 use App\Http\Controllers\API\V1\TestController;
+use App\Http\Controllers\API\V1\SkillController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api']], function() {
         Route::get('{id}/like/count', [PostController::class, 'getCountPostLike']);
         Route::get('{id}/comments', [PostController::class, 'getPostComment']);
         Route::get('{id}/comments/count', [PostController::class, 'countPostComment']);
+    });
+
+    Route::prefix('skills')->group(function() {
+        Route::get('test', [SkillController::class, 'list']);
     });
 });
 
@@ -66,11 +71,17 @@ Route::middleware(['jwt.verify:api'])->group(function() {
                     Route::put('profile', [UserController::class, 'updateProfile']);
                     Route::put('receive-notification', [UserController::class, 'recieveNotification']);
                     Route::put('description', [UserController::class, 'updateDescription']);
+                    Route::put('profession', [UserController::class, 'updateProfession']);
+                });
+
+                Route::prefix('skills')->group(function() {
+                    Route::get('/', [SkillController::class, 'getUserSkills']);
                 });
 
             });
 
             Route::get('followers/{id}/count', [UserController::class, 'getUserCountFollower']);
+            
         });
 
 
