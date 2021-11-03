@@ -70,4 +70,46 @@ class SkillController extends Controller
         return response()->json($this->getResponse(), $error);
     }
 
+    public function updateUserSkills($user_id, Request $request)
+    {
+        # code...
+        $skillService = new SkillService();
+        $data = $skillService->updateUserSkills($user_id, $request);
+
+        $error = ( isset($data['error']) ) ?  $data['error'] :200;
+
+        if ($data) {
+            $this->message = 'Successfully updated data!';
+            $this->data  = $data;
+        } else {
+            $error = 400;
+            $this->message = 'There was an issue updating data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+
+    public function deleteUserSkills($user_id, $skill_id)
+    {
+        # code...
+        $skillService = new SkillService();
+        $data = $skillService->deleteUserSkills($user_id, $skill_id);
+
+        $error = ( isset($data['error']) ) ?  $data['error'] :200;
+
+        if ($data) {
+            $this->message = 'Successfully deleted data!';
+            $this->data  = $data;
+        } else {
+            $error = 400;
+            $this->message = 'There was an issue deleting data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+    
 }

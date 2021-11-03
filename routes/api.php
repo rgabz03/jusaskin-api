@@ -76,6 +76,11 @@ Route::middleware(['jwt.verify:api'])->group(function() {
 
                 Route::prefix('skills')->group(function() {
                     Route::get('/', [SkillController::class, 'getUserSkills']);
+                    Route::put('update', [SkillController::class, 'updateUserSkills']);
+
+                    Route::prefix('{skill_id}')->group(function() {
+                        Route::delete('delete', [SkillController::class, 'deleteUserSkills']);
+                    });
                 });
 
             });
