@@ -11,6 +11,23 @@ use App\Http\Services\V1\PostService;
 class PostController extends Controller
 {
     //
+    public function create($user_id, Request $request)
+    {
+        # code...
+        $postService = new PostService();
+        $data   =   $postService->create($user_id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully created data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue creating data. Please try again.';
+            $this->error = true;
+        }
+    }
+
     public function list(Request $request)
     {
         # code...
@@ -98,6 +115,7 @@ class PostController extends Controller
             $this->error = true;
         }
     }
+
 
 }
 

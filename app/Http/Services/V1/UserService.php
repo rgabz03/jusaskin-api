@@ -10,6 +10,7 @@ use App\Http\Services\V1\FollowerService;
 use App\Models\User;
 use App\Models\Profile;
 use App\Models\PostSave;
+use App\Models\Follower;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -191,8 +192,9 @@ class UserService extends Service
     public function getUserSavedPost($user_id, $request)
     {
         # code...
-        $data = PostSave::where(['user_id' => $user_id])
-                        ->orderBy('created_date', 'desc')
+        $data = PostSave::select(['posts.*'])
+                        ->leftJoin("posts", "posts.id", "post_save.post_id")
+                        ->where(['post_save.user_id' => $user_id])
                         ->get();
 
         if($data){
@@ -300,6 +302,42 @@ class UserService extends Service
             if($data){
                 return $data;
             }
+        }
+
+        return false;
+    }
+
+
+    public function list($request)
+    {
+        # code...
+        $keyword = (isset($request->keyword)) ? $request->keyword : '';
+
+        $data = User::select(["profiles.first_name","profiles.last_name", "profiles.job", "users.id"])
+                    ->selectRaw(" count( followers.user_id ) as followers_count, count( posts.user_id ) as posts_count  ")
+                    ->leftJoin("profiles","users.id","profiles.user_id")
+                    ->leftJoin("followers","users.id","followers.user_id")
+                    ->leftJoin("posts","users.id","posts.user_id")
+                    ->where(['users.status' => 'active'])
+                    ->whereRaw(" (profiles.first_name like '%$keyword%' or profiles.last_name like '%$keyword%' ) ")
+                    ->groupBy("users.id")
+                    ->get();
+
+        if($data){
+            return $data;
+        }
+
+        return false;
+
+    }
+
+    public function checkIfYouFollowedUser($your_id, $user_id)
+    {
+        # code...
+        $data = Follower::where(['user_id' => $your_id, "follower_id" => $user_id])->first();
+
+        if($data){
+            return ['followed' => true];
         }
 
         return false;

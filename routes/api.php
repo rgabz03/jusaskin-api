@@ -56,6 +56,9 @@ Route::middleware(['jwt.verify:api'])->group(function() {
 
         // For getting user profile
         Route::prefix('users')->group(function() {
+            
+            Route::get('list', [UserController::class, 'list']);
+
             Route::get('profile/{id}', [UserController::class, 'getUserProfile']);
             Route::prefix('coins')->group(function() {
                 Route::get('balance/{id}', [UserController::class, 'getCoinsBalance']);
@@ -65,6 +68,17 @@ Route::middleware(['jwt.verify:api'])->group(function() {
                 
                 Route::prefix('posts')->group(function() {
                     Route::get('saved', [UserController::class, 'getUserPostSave']);
+                });
+
+                Route::prefix('checkfollowed')->group(function() {
+                    Route::get('{user_id}', [UserController::class, 'checkIfYouFollowedUser']);
+                });
+
+                Route::prefix('messages')->group(function() {
+                    Route::get('/', [UserController::class, 'getMyMessages']);
+                    Route::get('{user_id}', [UserController::class, 'getMessageFromUser']);
+                    Route::get('{user_id}/name', [UserController::class, 'getNameFromUserMessage']);
+                    Route::post('send', [UserController::class, 'sendMessageToUser']);
                 });
 
                 Route::prefix('update')->group(function() {

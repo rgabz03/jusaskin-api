@@ -8,6 +8,7 @@ use App\Http\Services\V1\SkillService;
 use App\Models\User;
 use App\Models\Profile;
 use App\Models\Post;
+use App\Models\PostSave;
 use App\Models\PostComment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,12 @@ use Illuminate\Support\Facades\Auth;
 
 class PostService extends Service
 {
+
+    public function create($user_id, $request)
+    {
+        # code...
+    }
+
     public function list($request)
     {
         # code...
@@ -79,12 +86,20 @@ class PostService extends Service
     public function countPostLike($id, $request)
     {
         # code...
-        $data = Post::selectRaw("count(id) as 'count_like'")
+        // $data = Post::selectRaw("count(id) as 'count_like'")
+        //             ->where(['id' => $id])
+        //             ->get();
+        
+        // if($data){
+        //     return $data;
+        // }            
+
+        $data = Post::select('likes')
                     ->where(['id' => $id])
                     ->get();
-        
+
         if($data){
-            return $data;
+            return $data->likes;
         }
 
         return false;
@@ -94,14 +109,17 @@ class PostService extends Service
     public function countPostComment($id, $request)
     {
         # code...
-        $data = PostComment::selectRaw("count(id) as 'count_comment'")
-                    ->where(['post_id' => $id])
+
+        $data = Post::select('comment_count')
+                    ->where(['id' => $id])
                     ->get();
-        
+
         if($data){
-            return $data;
+            return $data->comment_count;
         }
+
 
         return false;
     }
+
 }
