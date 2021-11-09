@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\V1\UserService;
+use App\Http\Services\V1\MessageService;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -62,6 +64,7 @@ class UserController extends Controller
             $this->error = true;
         }else{
             $user_data = User::where(['username' => $request->username])->first();
+            $update_login = User::where('id', $user_data->id)->update(['login_date' => Carbon::now()->format('Y-m-d h:i:s')]);
             $data = $this->respondWithToken($token);
             $this->message = 'Successfully login user!';
             $this->data  = ['access' => $data->original, 'user_data' => $user_data];
@@ -225,6 +228,7 @@ class UserController extends Controller
     public function getUserPostSave($id, Request $request)
     {
         # code...
+
         $userService = new UserService();
         $data   =   $userService->getUserSavedPost($id, $request);
 
@@ -323,4 +327,129 @@ class UserController extends Controller
 
         return response()->json($this->getResponse(), $error);
     }
+
+
+    public function getMyMessages($id, Request $request)
+    {
+        # code...
+        $messageService = new MessageService();
+
+        $data   =   $messageService->getMyMessages($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue fetching data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+    public function getMessageFromUser($id,$user_id)
+    {
+        # code...
+        $messageService = new MessageService();
+
+        $data   =   $messageService->getMessageFromUser($id, $user_id);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue fetching data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+    public function getNameFromUserMessage($id,$user_id)
+    {
+        # code...
+        $messageService = new MessageService();
+
+        $data   =   $messageService->getNameFromUserMessage($id, $user_id);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue fetching data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+    
+    public function sendMessageToUser($id,Request $request)
+    {
+        # code...
+        $messageService = new MessageService();
+
+        $data   =   $messageService->sendMessageToUser($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully sent data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue sending data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+
+    public function list(Request $request)
+    {
+        # code...
+        $userService = new UserService();
+
+        $data   =   $userService->list($request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue fetch data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+
+    public function checkIfYouFollowedUser($id, $user_id)
+    {
+        # code...
+        $userService = new UserService();
+
+        $data   =   $userService->checkIfYouFollowedUser($id, $user_id);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue fetching data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+    
+    
 }

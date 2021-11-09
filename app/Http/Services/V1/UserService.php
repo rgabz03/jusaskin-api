@@ -311,9 +311,13 @@ class UserService extends Service
     public function list($request)
     {
         # code...
+
+        $user = auth()->user();
+
         $keyword = (isset($request->keyword)) ? $request->keyword : '';
 
         $data = User::select(["profiles.first_name","profiles.last_name", "profiles.job", "users.id"])
+                    ->selectRaw(" if( (select count(*) from followers where user_id = $user->id and follower_id = users.id ) > 0, 1, 0 ) as followed ")
                     ->selectRaw(" count( followers.user_id ) as followers_count, count( posts.user_id ) as posts_count  ")
                     ->leftJoin("profiles","users.id","profiles.user_id")
                     ->leftJoin("followers","users.id","followers.user_id")
