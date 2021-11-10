@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Services\V1\UserService;
+use App\Http\Services\V1\FollowerService;
 use App\Http\Services\V1\MessageService;
 use Carbon\Carbon;
 
@@ -273,7 +274,7 @@ class UserController extends Controller
 
         $error  =   (isset($data['error'])) ? $data['error'] : 200;
 
-        if ($data && !$data['error']) {
+        if ($data && !isset($data['error'])) {
             $this->message = 'Successfully updated Profile!';
             $this->data  = $data;
         } else {
@@ -423,7 +424,7 @@ class UserController extends Controller
             $this->message = 'Successfully fetch data!';
             $this->data  = $data;
         } else {
-            $this->message = 'There was an issue fetch data. Please try again.';
+            $this->message = 'There was an issue  data. Please try again.';
             $this->error = true;
         }
 
@@ -437,6 +438,27 @@ class UserController extends Controller
         $userService = new UserService();
 
         $data   =   $userService->checkIfYouFollowedUser($id, $user_id);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue fetching data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
+
+
+    public function followUser($id, $user_id)
+    {
+        # code...
+        $followerService = new FollowerService();
+
+        $data   =   $followerService->followUser($id, $user_id);
 
         $error  =   (isset($data['error'])) ? $data['error'] : 200;
 

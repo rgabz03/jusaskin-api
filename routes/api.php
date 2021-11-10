@@ -70,6 +70,10 @@ Route::middleware(['jwt.verify:api'])->group(function() {
                     Route::get('saved', [UserController::class, 'getUserPostSave']);
                 });
 
+                Route::prefix('follow')->group(function() {
+                    Route::get('{user_id}', [UserController::class, 'followUser']);
+                });
+
                 Route::prefix('checkfollowed')->group(function() {
                     Route::get('{user_id}', [UserController::class, 'checkIfYouFollowedUser']);
                 });

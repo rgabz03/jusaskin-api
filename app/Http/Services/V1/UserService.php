@@ -323,7 +323,7 @@ class UserService extends Service
                     ->leftJoin("followers","users.id","followers.user_id")
                     ->leftJoin("posts","users.id","posts.user_id")
                     ->where(['users.status' => 'active'])
-                    ->whereRaw(" (profiles.first_name like '%$keyword%' or profiles.last_name like '%$keyword%' ) ")
+                    ->whereRaw(" (profiles.first_name like '%$keyword%' or profiles.last_name like '%$keyword%' ) and users.id != $user->id")
                     ->groupBy("users.id")
                     ->get();
 

@@ -56,4 +56,27 @@ class FollowerService extends Service
         return false;
     }
 
+
+    public function followUser($id, $user_id)
+    {
+        # code...
+        $check = Follower::where(['user_id' =>  $id, "follower_id" => $user_id])->first();
+
+        if(!$check){
+            $data = [
+                "user_id"       => $id,
+                "follower_id"   => $user_id,
+                "followed_date" => Carbon::now()->format('Y-m-d h:i:s'),
+            ];
+
+            $save = Follower::create($data);
+
+            if($save){
+                return $save;
+            }
+        }
+        
+        return false;
+    }
+
 }
