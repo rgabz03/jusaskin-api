@@ -25,7 +25,12 @@ class PostService extends Service
     public function list($request)
     {
         # code...
-        $data = Post::where(['status' => 'active'])
+        $user = auth()->user();
+
+        $data = Post::select(['posts.*',"profiles.first_name"])
+                    ->selectRaw("if( (select count(*) from followers where user_id = $user->id and followed_id = posts.user_id ) > 0, 1, 0 ) as followed ")
+                    ->leftJoin("profiles", "posts.user_id", "profiles.user_id")
+                    ->where(['status' => 'active'])
                     ->orderBy( 'created_date', 'desc')
                     ->get();
 

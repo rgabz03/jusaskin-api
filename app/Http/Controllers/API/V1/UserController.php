@@ -472,6 +472,27 @@ class UserController extends Controller
 
         return response()->json($this->getResponse(), $error);
     }
+
+    public function getUserFollowedList($id, Request $request)
+    {
+        # code...
+        # code...
+        $followerService = new FollowerService();
+
+        $data   =   $followerService->getUserFollowedList($id, $request);
+
+        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+        if ($data) {
+            $this->message = 'Successfully fetch data!';
+            $this->data  = $data;
+        } else {
+            $this->message = 'There was an issue fetching data. Please try again.';
+            $this->error = true;
+        }
+
+        return response()->json($this->getResponse(), $error);
+    }
     
     
 }

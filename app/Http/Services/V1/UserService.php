@@ -239,7 +239,7 @@ class UserService extends Service
 
             $username_update = User::where('id', $id)->update(['username' => $request->username]);
 
-            $data = Profile::where('user_id', $id)->update($request->only('first_name','last_name','location'));
+            $data = Profile::where('user_id', $id)->update($request->only('first_name','last_name','location','coins_charge'));
 
             if($data){
                 return $data;
@@ -317,7 +317,7 @@ class UserService extends Service
         $keyword = (isset($request->keyword)) ? $request->keyword : '';
 
         $data = User::select(["profiles.first_name","profiles.last_name", "profiles.job", "users.id"])
-                    ->selectRaw(" if( (select count(*) from followers where user_id = $user->id and follower_id = users.id ) > 0, 1, 0 ) as followed ")
+                    ->selectRaw(" if( (select count(*) from followers where user_id = $user->id and followed_id = users.id ) > 0, 1, 0 ) as followed ")
                     ->selectRaw(" count( followers.user_id ) as followers_count, count( posts.user_id ) as posts_count  ")
                     ->leftJoin("profiles","users.id","profiles.user_id")
                     ->leftJoin("followers","users.id","followers.user_id")
@@ -338,7 +338,7 @@ class UserService extends Service
     public function checkIfYouFollowedUser($your_id, $user_id)
     {
         # code...
-        $data = Follower::where(['user_id' => $your_id, "follower_id" => $user_id])->first();
+        $data = Follower::where(['user_id' => $your_id, "followed_id" => $user_id])->first();
 
         if($data){
             return ['followed' => true];

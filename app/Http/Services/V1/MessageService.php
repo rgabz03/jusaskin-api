@@ -18,14 +18,19 @@ class MessageService extends Service
     public function getMyMessages($user_id, $request)
     {
         # code...
+        $user = auth()->user();
 
-        $data = Message::select(['profiles.picture_path','messages.id','messages.user_id', 'messages.created_date', 'messages.content'])
-                        ->selectRaw("if( messages.status = 'unread', (select count(*) from messages where messages.to_user_id = $user_id and messages.status = 'unread' ), 0 ) as message_count ")
+        $data = Message::select(['profiles.picture_path','messages.id','messages.user_id', 'messages.content', 'messages.status'])
+                        ->selectRaw("max(`messages`.`created_date`) as created_date")
+                        ->selectRaw("if( (select count(*) from messages where messages.to_user_id = $user_id and messages.status = 'unread' ) > 0, 1, 0 ) as message_count ")
                         ->leftJoin("profiles","messages.user_id","profiles.user_id")
                         ->where(['messages.to_user_id' => $user_id])
+                        ->whereRaw("messages.created_date in (SELECT max(messages.created_date) from messages GROUP BY messages.user_id)")
+                        // ->where(['messages.userid' => $user->id])
                         ->groupBy('messages.user_id')
+                        // ->groupBy('messages.status')
                         ->orderBy('messages.created_date', 'DESC')
-                        ->orderBy('message_count', 'ASC')
+                        // ->orderBy('message_count', 'ASC')
                         ->get();
                         // ->toArray();
                         // ->toSql();
@@ -42,8 +47,10 @@ class MessageService extends Service
     public function getMessageFromUser($id, $user_id)
     {
         # code...
-        $data = Message::where(['user_id' => $user_id, 'to_user_id' => $id])
-                        ->orWhere(['user_id' => $id, 'to_user_id' => $user_id])
+        $user = auth()->user();
+        $data = Message::whereIn('user_id', [$user->id, $user_id])
+                        ->whereIn('to_user_id', [$user->id, $user_id])
+                        ->whereRaw("user_id != to_user_id")
                         ->orderBy('created_date','DESC')
                         ->get();
 

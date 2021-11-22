@@ -43,6 +43,8 @@ class PostController extends Controller
             $this->message = 'There was an issue getting post list. Please try again.';
             $this->error = true;
         }
+
+        return response()->json($this->getResponse(), $error);
     }
 
     public function likePost($id, Request $request)

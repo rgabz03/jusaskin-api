@@ -54,6 +54,10 @@ Route::post('test/mail', [TestController::class, 'testNotifyMe']);
 Route::middleware(['jwt.verify:api'])->group(function() {
     Route::prefix('v1')->group(function() {
 
+        Route::prefix('posts')->group(function() {
+            Route::get('/', [PostController::class, 'list']);
+        });
+
         // For getting user profile
         Route::prefix('users')->group(function() {
             
@@ -72,6 +76,10 @@ Route::middleware(['jwt.verify:api'])->group(function() {
 
                 Route::prefix('follow')->group(function() {
                     Route::get('{user_id}', [UserController::class, 'followUser']);
+                });
+
+                Route::prefix('following')->group(function() {
+                    Route::get('/', [UserController::class, 'getUserFollowedList']);
                 });
 
                 Route::prefix('checkfollowed')->group(function() {
