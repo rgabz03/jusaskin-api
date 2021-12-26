@@ -56,6 +56,7 @@ Route::middleware(['jwt.verify:api'])->group(function() {
 
         Route::prefix('posts')->group(function() {
             Route::get('/', [PostController::class, 'list']);
+            Route::post('/', [PostController::class, 'create']);
         });
 
         // For getting user profile

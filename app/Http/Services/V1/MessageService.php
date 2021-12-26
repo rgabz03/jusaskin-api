@@ -27,6 +27,13 @@ class MessageService extends Service
                         ->where(['messages.to_user_id' => $user_id])
                         ->whereRaw("messages.created_date in (SELECT max(messages.created_date) from messages GROUP BY messages.user_id)")
                         // ->where(['messages.userid' => $user->id])
+                        ->when($request->has('search_name'), function ($data) use ($request) {
+
+                            if(!empty($request->search_name)){
+                                return $data->whereRaw("profiles.first_name like '%$request->search_name%'");
+                            }
+                            
+                        })
                         ->groupBy('messages.user_id')
                         // ->groupBy('messages.status')
                         ->orderBy('messages.created_date', 'DESC')
@@ -44,7 +51,7 @@ class MessageService extends Service
         return false;
     }
 
-    public function getMessageFromUser($id, $user_id)
+    public function getMessageFromUser($id, $user_id, $request)
     {
         # code...
         $user = auth()->user();
@@ -73,7 +80,7 @@ class MessageService extends Service
         $data = Profile::select(['profiles.first_name', 'users.login_date', 'users.id','profiles.picture_path'])
                         ->leftJoin("users","profiles.user_id", "users.id")
                         ->where(['profiles.user_id' => $user_id])
-                        ->get()->toArray();
+                        ->get();
 
         if($data){
             return $data;

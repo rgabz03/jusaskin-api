@@ -13,6 +13,7 @@ use App\Models\PostComment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostService extends Service
 {

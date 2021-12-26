@@ -350,12 +350,12 @@ class UserController extends Controller
         return response()->json($this->getResponse(), $error);
     }
 
-    public function getMessageFromUser($id,$user_id)
+    public function getMessageFromUser($id,$user_id, $request)
     {
         # code...
         $messageService = new MessageService();
 
-        $data   =   $messageService->getMessageFromUser($id, $user_id);
+        $data   =   $messageService->getMessageFromUser($id, $user_id, $request);
 
         $error  =   (isset($data['error'])) ? $data['error'] : 200;
 

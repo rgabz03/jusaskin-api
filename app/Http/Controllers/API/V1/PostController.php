@@ -15,17 +15,26 @@ class PostController extends Controller
     {
         # code...
         $postService = new PostService();
-        $data   =   $postService->create($user_id, $request);
+        $user_data = auth()->users();
 
-        $error  =   (isset($data['error'])) ? $data['error'] : 200;
+        if($user_data){
 
-        if ($data) {
-            $this->message = 'Successfully created data!';
-            $this->data  = $data;
-        } else {
-            $this->message = 'There was an issue creating data. Please try again.';
-            $this->error = true;
+            $data   =   $postService->create($user_data->id, $request);
+
+            $error  =   (isset($data['error'])) ? $data['error'] : 200;
+
+            if ($data) {
+                $this->message = 'Successfully created data!';
+                $this->data  = $data;
+            } else {
+                $this->message = 'There was an issue creating data. Please try again.';
+                $this->error = true;
+            }
+        }else{
+            $error = 400;
         }
+
+        return response()->json($this->getResponse(), $error);
     }
 
     public function list(Request $request)
