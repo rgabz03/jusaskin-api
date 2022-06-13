@@ -72,6 +72,7 @@ Route::middleware(['jwt.verify:api'])->group(function() {
                 Route::get('interest', [UserController::class, 'getUserInterest']);
                 
                 Route::prefix('posts')->group(function() {
+                    Route::post('/', [PostController::class, 'create']);
                     Route::get('saved', [UserController::class, 'getUserPostSave']);
                 });
 

@@ -5,7 +5,6 @@ namespace App\Http\Services\V1;
 use JWTAuth;
 use App\Http\Services\Service;
 use App\Http\Services\V1\SkillService;
-use App\Http\Services\V1\UploadService;
 use App\Models\User;
 use App\Models\Profile;
 use App\Models\Post;
@@ -16,13 +15,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class PostService extends Service
+class UploadService extends Service
 {
 
-    public function create($user_id, $request)
-    {   
-        $uploadService = new UploadService();
-
+    public function uploadPostFile($request)
+    {
         if($request->header('Authorization'))
         {
             try {
@@ -39,27 +36,46 @@ class PostService extends Service
                 return response()->json(['message' => 'Unauthorized','error'=>true,'data'=>''], 401);
             }
 
-            // Add an image uploader here
-            $file_name= 'na';
-            $file_data      = $uploadService->uploadPostFile($request);
+            if(isset($_FILES['image']))
+            {
 
-            if($file_data){
-                $file_name = $file_data['filename'];
-            }
-            // End
+                $array = explode('.', $_FILES['image']['name']);
+                $extension = end($array);
 
-            $params = [
-                'ip'            => $_SERVER['REMOTE_ADDR'],
-                'title'         => $request->title,
-                'content'       => $request->content,
-                'media'         => $file_name,
-                'created_date'  => Carbon::now()->format('Y-m-d H:i:s'),
-            ];
 
-            $data = Post::create($params);
-            
-            if($data){
-                return $data;
+                $request->validate([
+                    'image' => 'required|max:25000',
+                ]);
+
+                if(!in_array($extension,['gif','mov','mp4', 'ogg', 'mpeg','avi','wmv','jpg','jpeg','png']))
+                {
+                    return ['error' => 422, 'message' => 'The attachment must be a file of type: gif, mov, mp4, ogg, mpeg, avi, wmv, jpg/jpeg, png.'];
+                }
+
+                $attachment = $_FILES['image'];
+                $attachment_extension = $request->file('image')->extension();
+
+                $array = explode('.', $_FILES['image']['name']);
+                $extension = end($array);
+
+                if ($request->hasFile('image')) {
+
+                    if ($request->file('image')->isValid()) {
+
+                        $file      = $request->file('image');
+                        $extension = (empty($file->extension()) || $file->extension() == '') ? $extension : $file->extension();
+                        $file_name = "posts-".time() . '.' . $extension;
+
+                        // change directory
+                        $data = $request->image->storeAs('files', $file_name );
+
+                        if($data)
+                        {
+                            return ['filename' => $file_name, 'fileurl' => url('/')."/$data" ];
+                        }
+                        return false;
+                    }
+                }
             }
         }
 
@@ -70,11 +86,10 @@ class PostService extends Service
     public function list($request)
     {
         # code...
-        $domain = config('app.client_base_url') ? config('app.client_base_url') : "127.0.0.1";
         $user = auth()->user();
 
         $data = Post::select(['posts.*',"profiles.first_name"])
-                    ->selectRaw(" '$domain' as domain, if( (select count(*) from followers where user_id = $user->id and followed_id = posts.user_id ) > 0, 1, 0 ) as followed ")
+                    ->selectRaw("if( (select count(*) from followers where user_id = $user->id and followed_id = posts.user_id ) > 0, 1, 0 ) as followed ")
                     ->leftJoin("profiles", "posts.user_id", "profiles.user_id")
                     ->where(['status' => 'active'])
                     ->orderBy( 'created_date', 'desc')

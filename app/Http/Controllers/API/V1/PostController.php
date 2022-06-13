@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use JWTAuth;
+use Tymon\JWTAuth\Facades\JWTFactory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Services\V1\UserService;
 use App\Http\Services\V1\PostService;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use App\Traits\DefaultTrait;
 
 
 class PostController extends Controller
 {
+
+    use DefaultTrait;
     //
     public function create($user_id, Request $request)
     {
         # code...
         $postService = new PostService();
-        $user_data = auth()->users();
+
+        $user_data = $this->user_data($request);
 
         if($user_data){
 

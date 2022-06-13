@@ -20,10 +20,11 @@ class MessageService extends Service
         # code...
         $user = auth()->user();
 
-        $data = Message::select(['profiles.picture_path','messages.id','messages.user_id', 'messages.content', 'messages.status'])
+        $data = Message::select(['profiles.picture_path', 'profiles.first_name','profiles.last_name', 'posts.title','messages.id','messages.user_id', 'messages.content', 'messages.status'])
                         ->selectRaw("max(`messages`.`created_date`) as created_date")
                         ->selectRaw("if( (select count(*) from messages where messages.to_user_id = $user_id and messages.status = 'unread' ) > 0, 1, 0 ) as message_count ")
                         ->leftJoin("profiles","messages.user_id","profiles.user_id")
+                        ->leftJoin("posts","posts.id","messages.post_id")
                         ->where(['messages.to_user_id' => $user_id])
                         ->whereRaw("messages.created_date in (SELECT max(messages.created_date) from messages GROUP BY messages.user_id)")
                         // ->where(['messages.userid' => $user->id])
@@ -51,7 +52,7 @@ class MessageService extends Service
         return false;
     }
 
-    public function getMessageFromUser($id, $user_id, $request)
+    public function getMessageFromUser($id, $user_id)
     {
         # code...
         $user = auth()->user();

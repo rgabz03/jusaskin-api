@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use HasFactory;
+
+    protected $table = 'posts';
+
+    protected $fillable = [
+        'ip', 'title', 'content', 'media', 'created_date'
+    ];
+
+    public $timestamps = false;
 }
